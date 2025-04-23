@@ -6,11 +6,16 @@ This project focuses on developing an adaptive safety system to minimize collisi
   ```
   pip install matplotlib
   (To plot graphs for sensor data (like speed, distance, TTC) during initial simulations. It helped visualize how values change over time before moving into real-time 3D rendering).
-  
   ```
-* **Tkinter:** python -m pip install tk (To build a simple GUI dashboard with real-time labels and controls (like Start/Stop buttons). It was used during the early phase to display simulation outputs in a user-friendly way).
-* **PyOpenGL:** pip install PyOpenGL PyOpenGL_accelerate (To create a real-time 3D simulation of the vehicle, road, obstacles, and sensor effects. It allowed us to visualize motion, collision detection, LiDAR range, and HUD overlays from different camera views).
-* **
+* **Tkinter:**
+  ```
+  python -m pip install tk (To build a simple GUI dashboard with real-time labels and controls (like Start/Stop buttons). It was used during the early phase to display simulation outputs in a user-friendly way).
+  ```
+* **PyOpenGL:**
+  ```
+ pip install PyOpenGL PyOpenGL_accelerate (To create a real-time 3D simulation of the vehicle, road, obstacles, and sensor effects. It allowed us to visualize motion, collision detection, LiDAR range, and HUD overlays from different camera views).
+  
+ 
 ## Objectives
 
 * **Enhance Road Safety:** Reduce collision risks in high-speed and low-visibility environments. [cite: 75]
