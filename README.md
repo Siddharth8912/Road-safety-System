@@ -2,7 +2,11 @@
 
 This project focuses on developing an adaptive safety system to minimize collision risks during high-speed driving, especially in low-visibility conditions. The system integrates Lidar, Radar, and GPS technologies to achieve real-time obstacle detection, speed monitoring, and automated safety interventions. [cite: 75, 76, 77, 130, 131]
 ## To Run the following code you need to add some python libraries
-* **MatPlotib:** pip install matplotlib (To plot graphs for sensor data (like speed, distance, TTC) during initial simulations. It helped visualize how values change over time before moving into real-time 3D rendering).
+* **MatPlotib:**
+  '''
+  pip install matplotlib
+  '''
+  (To plot graphs for sensor data (like speed, distance, TTC) during initial simulations. It helped visualize how values change over time before moving into real-time 3D rendering).
 * **Tkinter:** python -m pip install tk (To build a simple GUI dashboard with real-time labels and controls (like Start/Stop buttons). It was used during the early phase to display simulation outputs in a user-friendly way).
 * **PyOpenGL:** pip install PyOpenGL PyOpenGL_accelerate (To create a real-time 3D simulation of the vehicle, road, obstacles, and sensor effects. It allowed us to visualize motion, collision detection, LiDAR range, and HUD overlays from different camera views).
 * **
