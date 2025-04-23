@@ -1,0 +1,110 @@
+import random
+import time
+import tkinter as tk
+from tkinter import ttk
+import threading
+
+# ---------------- Kalman Filter Class ----------------
+class KalmanFilter1D:
+    def __init__(self, process_variance, measurement_variance):
+        self.x = 0.0  # initial estimate
+        self.P = 1.0  # initial estimate uncertainty
+        self.Q = process_variance  # process (model) noise
+        self.R = measurement_variance  # measurement noise
+
+    def update(self, measurement):
+        # Prediction update
+        self.P += self.Q
+
+        # Measurement update
+        K = self.P / (self.P + self.R)
+        self.x += K * (measurement - self.x)
+        self.P *= (1 - K)
+        return self.x
+
+# ---------------- Simulation Setup ----------------
+duration = 30  # seconds
+refresh_rate = 1  # Hz
+safe_ttc_threshold = 2.0  # seconds
+
+# Tkinter setup
+root = tk.Tk()
+root.title("Vehicle Safety System Simulation")
+root.geometry("500x400")
+
+# Label to display simulation results
+label_ttc = ttk.Label(root, text="TTC: ", font=("Arial", 14))
+label_ttc.pack(pady=10)
+
+label_brake = ttk.Label(root, text="Brake Triggered: ", font=("Arial", 14))
+label_brake.pack(pady=10)
+
+label_lidar = ttk.Label(root, text="Lidar Distance: ", font=("Arial", 14))
+label_lidar.pack(pady=10)
+
+label_radar = ttk.Label(root, text="Radar Speed: ", font=("Arial", 14))
+label_radar.pack(pady=10)
+
+# ---------------- Kalman filters for LiDAR and Radar ----------------
+kf_lidar = KalmanFilter1D(process_variance=2.0, measurement_variance=10.0)
+kf_radar = KalmanFilter1D(process_variance=1.0, measurement_variance=5.0)
+
+# ---------------- Simulation Loop ----------------
+simulation_running = False
+
+def run_simulation():
+    global simulation_running
+    start_time = time.time()
+
+    while simulation_running and time.time() - start_time < duration:
+        current_time = time.time() - start_time
+
+        # Simulated noisy sensor inputs
+        lidar_true = random.uniform(5.0, 50.0)
+        radar_true = random.uniform(5.0, 25.0)
+        gps_speed = random.uniform(10.0, 30.0)
+
+        # Add random noise
+        lidar_noisy = lidar_true + random.gauss(0, 5.0)
+        radar_noisy = radar_true + random.gauss(0, 3.0)
+
+        # Filter noisy values
+        lidar_filtered = kf_lidar.update(lidar_noisy)
+        radar_filtered = kf_radar.update(radar_noisy)
+
+        # Relative speed
+        relative_speed = max(gps_speed - radar_filtered, 0.1)
+        ttc = lidar_filtered / relative_speed
+
+        # Braking logic
+        should_brake = 1 if ttc < safe_ttc_threshold else 0
+
+        # Update the GUI labels
+        label_ttc.config(text=f"TTC: {ttc:.2f} seconds")
+        label_brake.config(text=f"Brake Triggered: {'YES' if should_brake else 'NO'}")
+        label_lidar.config(text=f"Lidar Distance: {lidar_filtered:.2f} m")
+        label_radar.config(text=f"Radar Speed: {radar_filtered:.2f} m/s")
+
+        root.update_idletasks()
+        root.update()
+
+        time.sleep(1.0 / refresh_rate)
+
+# Start/Stop button functionality
+def toggle_simulation():
+    global simulation_running
+    if simulation_running:
+        simulation_running = False
+        start_button.config(text="Start Simulation")
+    else:
+        simulation_running = True
+        start_button.config(text="Stop Simulation")
+        simulation_thread = threading.Thread(target=run_simulation)
+        simulation_thread.start()
+
+# Start/Stop Button
+start_button = ttk.Button(root, text="Start Simulation", command=toggle_simulation)
+start_button.pack(pady=20)
+
+# Start the Tkinter main loop
+root.mainloop()
